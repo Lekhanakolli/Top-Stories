@@ -1,16 +1,124 @@
-<% layout('/layouts/boilerplate') -%> 
+<% layout('/layouts/boilerplate') -%>
+
+<style>
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .card {
+    border-radius: 16px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none !important;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  }
+
+  .card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .card-header {
+    background: #2d2d2d !important;
+    color: white !important;
+    padding: 12px !important;
+    border-bottom: none !important;
+  }
+
+  .card-header h2 {
+    font-size: 16px !important;
+    margin: 0 !important;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .card-body {
+    padding: 16px !important;
+  }
+
+  .card-title {
+    font-size: 15px !important;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 14px !important;
+  }
+
+  .more {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .moredetails {
+    border-radius: 50px !important;
+    padding: 7px 18px !important;
+    font-size: 13px !important;
+  }
+
+  .bookmark-btn {
+    border-radius: 50px !important;
+    padding: 7px 14px !important;
+  }
+
+  .card-footer {
+    padding: 10px 16px !important;
+    font-size: 12px !important;
+  }
+
+  .card-footer h6 {
+    margin: 2px 0 !important;
+    font-size: 12px !important;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .cards-container {
+      grid-template-columns: 1fr;
+      padding: 12px;
+      gap: 16px;
+    }
+    .card-img { height: 160px; }
+  }
+</style>
+
 <div class="cards-container" id="newsContainer">
-<div class="container d-flex justify-content-center mt-3 fade show" id="alert-area" style="margin-top: 20px;">
-</div>
-<% for(let news of data){ %>
-  <div class="card text-center">
-    <div class="card-header">
+  <div class="container d-flex justify-content-center mt-3" id="alert-area"></div>
+
+  <% for(let news of data){ %>
+    <%
+      const title = encodeURIComponent(news.title || 'news');
+      const imgUrl = news.image
+        ? news.image
+        : `https://loremflickr.com/640/360/newspaper?random=${Math.floor(Math.random()*1000)}`;
+    %>
+    <div class="card text-center">
+      <div class="card-header">
         <h2 data-name="card"><%= news.source %></h2>
-    </div>
-    <div class="card-body">
+      </div>
+
+      <img
+        class="card-img"
+        src="<%= imgUrl %>"
+        alt="<%= news.source %>"
+        onerror="this.src='https://loremflickr.com/640/360/newspaper'"
+      >
+
+      <div class="card-body">
         <h5 class="card-title"><%= news.title %></h5>
         <div class="more">
-          <a href="<%= news.url %>" class="btn btn-secondary moredetails">More Details</a>
+          <a href="<%= news.url %>" class="btn btn-secondary moredetails" target="_blank">More Details</a>
           <button class="btn btn-outline-secondary bookmark-btn"
             data-title="<%= news.title %>"
             data-url="<%= news.url %>"
@@ -18,12 +126,12 @@
             data-date="<%= news.published_at %>"
             onclick="toggleBookmark(this)">🔖</button>
         </div>
+      </div>
+
+      <div class="card-footer text-body-secondary">
+        <h6>Published On : <%= news.published_at.toString().split("T")[0] %></h6>
+        <h6 class="card-source">Source : <%= news.source %></h6>
+      </div>
     </div>
-    <div class="card-footer text-body-secondary">
-      <h6>Published On : <%= news.published_at.toString().split("T")[0] %></h6>
-      <h6 class="card-source">Source : <%= news.source %></h6>
-    </div>
-  </div>
-  
-<% } %>
+  <% } %>
 </div>
